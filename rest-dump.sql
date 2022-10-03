@@ -47,35 +47,6 @@ INSERT INTO `clients` VALUES (1,'Marcelina Mraz',89137325515,'b3fbd3cf9e854fd561
 UNLOCK TABLES;
 
 --
--- Table structure for table `deliveries`
---
-
-DROP TABLE IF EXISTS `deliveries`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `deliveries` (
-  `order_id` bigint(20) unsigned NOT NULL,
-  `adress` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `delievery_time` datetime DEFAULT current_timestamp(),
-  `courier_id` bigint(20) unsigned NOT NULL,
-  `client_id` bigint(20) unsigned NOT NULL,
-  KEY `courier_id` (`courier_id`),
-  KEY `client_id` (`client_id`),
-  CONSTRAINT `deliveries_ibfk_1` FOREIGN KEY (`courier_id`) REFERENCES `staff` (`id`),
-  CONSTRAINT `deliveries_ibfk_2` FOREIGN KEY (`client_id`) REFERENCES `clients` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `deliveries`
---
-
-LOCK TABLES `deliveries` WRITE;
-/*!40000 ALTER TABLE `deliveries` DISABLE KEYS */;
-/*!40000 ALTER TABLE `deliveries` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `menu`
 --
 
@@ -143,9 +114,12 @@ CREATE TABLE `orders` (
   `client_id` bigint(20) unsigned NOT NULL,
   `body` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`body`)),
   `created_at` datetime DEFAULT current_timestamp(),
+  `table_id` bigint(20) unsigned NOT NULL,
   UNIQUE KEY `id` (`id`),
   KEY `client_id` (`client_id`),
-  CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `clients` (`id`)
+  KEY `table_id` (`table_id`),
+  CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `clients` (`id`),
+  CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`table_id`) REFERENCES `tables` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -155,9 +129,43 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (1, 1, '{"hot_dog": 2, "latte": 1}', NOW()),(2, 2, '{"hot_dog": 5, "latte": 5}', NOW()),(3, 3, '{"hot_dog": 1, "latte": 2}', NOW()),(4, 4, '{"hot_dog": 3, "latte": 3}', NOW()),(5, 5, '{"hot_dog": 4, "latte": 1}', NOW()),(6, 6, '{"hot_dog": 1, "latte": 1}', NOW()),(7, 7, '{"hot_dog": 1, "latte": 1}', NOW()),(8, 8, '{"hot_dog": 1, "latte": 0}', NOW()),(9, 9, '{"hot_dog": 4, "latte": 0}', NOW()),(10, 10, '{"hot_dog": 0, "latte": 4}', NOW());
+INSERT INTO `orders` VALUES (1, 1, '{"hot_dog": 2, "latte": 1}', NOW(), 1),(2, 2, '{"hot_dog": 5, "latte": 5}', NOW(), 2),(3, 3, '{"hot_dog": 1, "latte": 2}', NOW(), 3),(4, 4, '{"hot_dog": 3, "latte": 3}', NOW(), 4),(5, 5, '{"hot_dog": 4, "latte": 1}', NOW(), 5),(6, 6, '{"hot_dog": 1, "latte": 1}', NOW(), 6),(7, 7, '{"hot_dog": 1, "latte": 1}', NOW(), 7),(8, 8, '{"hot_dog": 1, "latte": 0}', NOW(), 8),(9, 9, '{"hot_dog": 4, "latte": 0}', NOW(), 9),(10, 10, '{"hot_dog": 0, "latte": 4}', NOW(), 10);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
+--
+-- Table structure for table `deliveries`
+--
+
+DROP TABLE IF EXISTS `deliveries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `deliveries` (
+  `order_id` bigint(20) unsigned NOT NULL,
+  `adress` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `delievery_time` datetime DEFAULT current_timestamp(),
+  `courier_id` bigint(20) unsigned NOT NULL,
+  `client_id` bigint(20) unsigned NOT NULL,
+  KEY `courier_id` (`courier_id`),
+  KEY `client_id` (`client_id`),
+  KEY `order_id` (`order_id`),
+  CONSTRAINT `deliveries_ibfk_1` FOREIGN KEY (`courier_id`) REFERENCES `staff` (`id`),
+  CONSTRAINT `deliveries_ibfk_2` FOREIGN KEY (`client_id`) REFERENCES `clients` (`id`),
+  CONSTRAINT `deliveries_ibfk_3` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `deliveries`
+--
+
+LOCK TABLES `deliveries` WRITE;
+/*!40000 ALTER TABLE `deliveries` DISABLE KEYS */;
+INSERT INTO `deliveries` VALUES (4,'56982 Koepp Lake\nMaximilliaton, SD 34162','2022-08-31 23:21:58',7,6),(5,'398 Donnell Spur Suite 106\nNew Lesly, WY 76734','2022-09-10 20:52:06',6,8),(1,'470 Wyman Lights\nBrownfurt, NJ 01825','2022-09-25 09:09:45',6,6),(9,'77356 Mraz Lakes\nCatalinaside, IL 62689-5771','2022-09-25 06:10:17',4,6),(3,'926 Erika Isle\nLuefurt, IL 15925','2022-09-02 09:05:53',8,1),(9,'00442 Beth Club Suite 439\nSouth Milan, NY 51554','2022-09-05 04:26:23',6,7),(7,'4038 McClure Mission\nPort Wanda, SC 53452','2022-09-29 18:23:32',7,1),(5,'804 Pollich Ford Apt. 473\nBashirianfort, NM 04638','2022-09-20 11:56:23',8,3),(2,'53544 Vandervort Bypass\nPort Ethaview, FL 59275-0617','2022-09-04 20:10:31',3,5),(3,'005 Boehm Fort\nBrandifort, AL 69902','2022-09-08 22:27:18',6,4);
+/*!40000 ALTER TABLE `deliveries` ENABLE KEYS */;
+UNLOCK TABLES;
+
 
 --
 -- Table structure for table `staff`
@@ -331,6 +339,33 @@ INSERT INTO `tables` VALUES (1,'reserved',1,1),(2,'free',2,2),(3,'free',3,3),(4,
 /*!40000 ALTER TABLE `tables` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+
+--
+-- Table structure for table `logs`
+--
+
+DROP TABLE IF EXISTS `logs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `logs` (
+  `time` datetime DEFAULT NULL,
+  `table` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `command` text COLLATE utf8mb4_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logs`
+--
+
+LOCK TABLES `logs` WRITE;
+/*!40000 ALTER TABLE `logs` DISABLE KEYS */;
+INSERT INTO `logs` VALUES ('1998-04-29 05:04:31',NULL,NULL),('1986-11-18 13:36:01',NULL,NULL),('1982-03-28 16:25:05',NULL,NULL),('1996-11-05 10:49:54',NULL,NULL),('1990-07-21 09:56:55',NULL,NULL),('2018-03-13 07:07:59',NULL,NULL),('1975-03-06 10:47:23',NULL,NULL),('1989-01-08 07:05:07',NULL,NULL),('2011-10-11 16:26:31',NULL,NULL),('2010-10-27 13:35:32',NULL,NULL);
+/*!40000 ALTER TABLE `logs` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

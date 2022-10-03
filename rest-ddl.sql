@@ -46,7 +46,9 @@ CREATE TABLE orders (
 	client_id BIGINT UNSIGNED NOT NULL,
 	body JSON,
 	created_at DATETIME DEFAULT NOW(),
+	table_id BIGINT UNSIGNED NOT NULL,
 	
+	FOREIGN KEY (table_id) REFERENCES tables(id) 
 	FOREIGN KEY (client_id) REFERENCES clients(id) 
 );
 
@@ -127,7 +129,16 @@ CREATE TABLE deliveries (
 	client_id BIGINT UNSIGNED NOT NULL,
 	
 	FOREIGN KEY (courier_id) REFERENCES staff(id),
-	FOREIGN KEY (client_id) REFERENCES clients(id)
+	FOREIGN KEY (client_id) REFERENCES clients(id),
+	FOREIGN KEY (order_id) REFERENCES orders(id)
+);
+
+
+DROP TABLE IF EXISTS logs;
+CREATE TABLE logs(
+	time DATETIME,
+	`table` VARCHAR(255),
+	command TEXT
 );
 
 
